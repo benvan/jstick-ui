@@ -1,0 +1,3 @@
+[submodule "jstick"]
+	path = jstick
+	url = git@github.com:benvan/jstick.git
