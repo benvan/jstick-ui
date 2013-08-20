@@ -5,6 +5,7 @@
 	<style type="text/css">
 		.container{
 			padding:60px;
+			position:relative;
 			-webkit-touch-callout: none;
 			  -webkit-user-select: none;
 			  -khtml-user-select: none;
@@ -82,11 +83,9 @@
 		}
 		.h-handle:hover{
 			border-left-color:blue;
-			border-left-width: 7px;
 		}
 		.v-handle:hover{
 			border-bottom-color:blue;
-			border-bottom-width:7px;
 		}
 		.v-handle-holder input{
 			position: absolute;
@@ -104,7 +103,13 @@
 			right:0;
 			bottom:0;
 		}
-		input{
+		.inputs{
+			border:1px solid black;
+			position: absolute;
+			left:50px;
+			top:0px;
+		}
+		.ring input{
 			position: absolute;
 			left:0;
 			border:none;
@@ -118,24 +123,37 @@
 
 	<div class="container">
 		<div class="ring">
-			<div class="v-handle-holder"><div class="v-handle"></div><input type="text" value="1.5"/></div>
-			<div class="h-handle-holder"><div class="h-handle"></div><div class="h-value-holder"><input type="text" value="1.245"/></div></div>
+			<div class="v-handle-holder"><div class="v-handle"></div></div>
+			<div class="h-handle-holder"><div class="h-handle"></div></div>
 			<div class="handle-holder"><div id="handle" class="handle"></div></div>
+		</div>
+		<div class="inputs">
+			<input id="x" type="text" value="10"/>
+			<input id="y" type="text" value="5"/>
 		</div>
 	</div>
 
 	<script type="text/javascript">
 		var RADIUS = 25;
+		var shallowClone = function(o){ var r = {}; for (var i in o) r[i] = o[i]; return r; }
 
-		var JStickUI = function(){
+		var JStickUI = function(data, opts){
+			opts.sensitivity || (opts.sensitivity = { x: 0, y: 0 });
 			var handle = document.getElementsByClassName('handle')[0]; 
 			var vHandleHolder = document.getElementsByClassName('v-handle-holder')[0];
 			var hHandleHolder = document.getElementsByClassName('h-handle-holder')[0];
-			
+			var self = this;
+			var snapshot = shallowClone(data);
+			var syncData = opts.inputs ? function(){
+				opts.inputs.x.value = data.x;
+				opts.inputs.y.value = data.y;
+			} : function(){} ;
+
 			var jstick = new JStick({
 		        target: handle,
 		        onactivate: function(){
 		        	handle.style.transition = vHandleHolder.style.transition = hHandleHolder.style.transition = 0;
+		        	snapshot = shallowClone(data);
 		        },
 		        onrelease: function(){
 		        	handle.style.transition = vHandleHolder.style.transition = hHandleHolder.style.transition = "0.25s";
@@ -153,12 +171,27 @@
 		        	handle.style.bottom = -y*extent;
 		        	vHandleHolder.style.top = (y*extent*0.3);
 		        	hHandleHolder.style.right = -(x*extent*0.3);
+
+		        	data.x = snapshot.x + jstick.dx(opts.sensitivity.x);
+		        	data.y = snapshot.y + jstick.dy(opts.sensitivity.y);
+		        	syncData();
 		        }
 		    });	
 
 		};
 
-		new JStickUI();
+
+		var data = {
+			x: 0.5,
+			y: 0.1
+		};
+		new JStickUI(data, {
+			mode: 'relative',
+			inputs:{
+				x: document.getElementById('x'),
+				y: document.getElementById('y')
+			}
+		});
 
 
 	    
