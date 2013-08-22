@@ -170,7 +170,9 @@
             var joystickEl = createEntity();
             settings.container.appendChild(joystickEl);
 
-            var handle = joystickEl.getElementsByClassName('handle')[0]; 
+            var handle = joystickEl.getElementsByClassName('handle')[0];
+            var vHandle = joystickEl.getElementsByClassName('v-handle')[0];
+            var hHandle = joystickEl.getElementsByClassName('h-handle')[0];
             var vHandleHolder = joystickEl.getElementsByClassName('v-handle-holder')[0];
             var hHandleHolder = joystickEl.getElementsByClassName('h-handle-holder')[0];
             
@@ -188,32 +190,41 @@
                 syncData();
             } , settings.tickTime);
 
-            var jstick = new JStick({
-                target: handle,
-                onactivate: function(){
-                    handle.style.transition = vHandleHolder.style.transition = hHandleHolder.style.transition = 0;
-                    snapshot = shallowClone(data);
-                    ticker.start();
-                },
-                onrelease: function(){
-                    handle.style.transition = vHandleHolder.style.transition = hHandleHolder.style.transition = "0.25s";
-                    handle.style.right = 0;
-                    handle.style.bottom = 0;
-                    vHandleHolder.style.top = 0;
-                    hHandleHolder.style.right = 0;
-                    ticker.stop();
-                },
-                ondrag: function(){
-                    var x = jstick.dx(), y = jstick.dy();
-                    var h = Math.sqrt(y*y+x*x);
-                    var d = 0.1*Math.log(h+1);
-                    var extent = d*(RADIUS/h);
-                    handle.style.right = -x*extent;
-                    handle.style.bottom = -y*extent;
-                    vHandleHolder.style.top = (y*extent*0.3);
-                    hHandleHolder.style.right = -(x*extent*0.3);                    
-                }
-            }); 
+            var constrainedStick = function(target, constrainedAxis){
+                var jstick = new JStick({
+                    target: target,
+                    onactivate: function(){
+                        handle.style.transition = vHandleHolder.style.transition = hHandleHolder.style.transition = 0;
+                        snapshot = shallowClone(data);
+                        ticker.start();
+                    },
+                    onrelease: function(){
+                        handle.style.transition = vHandleHolder.style.transition = hHandleHolder.style.transition = "0.25s";
+                        handle.style.right = 0;
+                        handle.style.bottom = 0;
+                        vHandleHolder.style.top = 0;
+                        hHandleHolder.style.right = 0;
+                        ticker.stop();
+                    },
+                    ondrag: function(){
+                        var x = constrainedAxis == 'y' ? 0 : jstick.dx();
+                        var y = constrainedAxis == 'x' ? 0 : jstick.dy();
+
+                        var h = Math.sqrt(y*y+x*x);
+                        var d = 0.1*Math.log(h+1);
+                        var extent = d*(RADIUS/h);
+                        handle.style.right = -x*extent;
+                        handle.style.bottom = -y*extent;
+                        vHandleHolder.style.top = (y*extent*0.3);
+                        hHandleHolder.style.right = -(x*extent*0.3);
+                    }
+                });
+                return jstick;
+            };
+
+            var vstick = constrainedStick(vHandle, 'y');
+            var hstick = constrainedStick(hHandle, 'x');
+            var jstick = constrainedStick(handle);
 
         };
 
