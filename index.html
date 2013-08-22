@@ -4,7 +4,7 @@
     <script src="jstick-ui.js" type="text/javascript"></script>
     <style type="text/css">
         #container{
-            padding:20px;
+            padding:30px;
             position:relative;
             -webkit-touch-callout: none;
               -webkit-user-select: none;
@@ -14,16 +14,23 @@
               user-select: none; 
         }
 
+        .jstick-ui-container{
+            position:relative;
+            width:65px; height:65px;
+            margin:10px;
+        }
 
         .ring{
-            position:relative;
+            position:absolute;
+            top:0;left:0;right:0;bottom:0;
+            margin:auto;
+
             border-style:solid;
             border-color:black;
             border-width:2px;
             border-radius: 50px;
             width:50px;
             height:50px;
-            margin:20px;
         }
         .handle-holder{
             width:25px;
@@ -122,14 +129,52 @@
             min-width:10px;
             background-color:transparent;
         }
+        .v-sensitivity-holder{
+            position:absolute;
+            top:5; left:0; bottom:5;
+            width:0;
+            border-right: 1px dotted rgb(226, 226, 226);
+            border-left: 1px solid rgb(175, 175, 175);
+        }
+
+        .h-sensitivity-holder{
+            position:absolute;
+            left:5; bottom:0; right:5;
+            height:0;
+            border-right: 1px solid rgb(226, 226, 226);
+            border-top: 1px solid rgb(175, 175, 175);
+        }
+
+        .v-sensitivity-handle,.h-sensitivity-handle{
+            right:0;
+            bottom:0;
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            margin-right: -3px;
+            margin-bottom: -3px;
+            border: 1px solid black;
+            border-radius: 3px;
+            background-color: rgb(172,172,172);
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div id="container">
-        
         <div class="inputs">
             <input id="x" type="text" value="10"/>
             <input id="y" type="text" value="5"/>
+        </div>
+    </div>
+    <div style="margin-top:100px;"></div>
+    <div class="jstick-ui-container">
+        <div class="v-sensitivity-holder"><div class="v-sensitivity-handle"></div></div>
+        <div class="h-sensitivity-holder"><div class="h-sensitivity-handle"></div></div>
+        <div class="ring">
+            <div class="v-handle-holder"><div class="v-handle"></div></div>
+            <div class="h-handle-holder"><div class="h-handle"></div></div>
+            <div class="handle-holder"><div id="handle" class="handle"></div></div> 
         </div>
     </div>
 

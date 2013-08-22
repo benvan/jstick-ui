@@ -12,9 +12,13 @@ var JStickUI = (function(){
     }
 
     var tpl = '\
+        <div class="v-sensitivity-holder"><div class="v-sensitivity-handle"></div></div>\
+        <div class="h-sensitivity-holder"><div class="h-sensitivity-handle"></div></div>\
+        <div class="ring">\
             <div class="v-handle-holder"><div class="v-handle"></div></div>\
             <div class="h-handle-holder"><div class="h-handle"></div></div>\
-            <div class="handle-holder"><div id="handle" class="handle"></div></div>';
+            <div class="handle-holder"><div id="handle" class="handle"></div></div>\
+        </div>';
 
     return function(data, opts){
         var defaults = {
@@ -28,7 +32,7 @@ var JStickUI = (function(){
         
         var createEntity = function(){
             var container = document.createElement('div');
-            container.setAttribute('class', 'ring');
+            container.setAttribute('class', 'jstick-ui-container');
             container.innerHTML = tpl;
             return container;
         };
