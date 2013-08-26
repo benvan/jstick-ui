@@ -43,7 +43,7 @@ var JStickUI = (function(){
         var joystickEl = createEntity();
         settings.container.appendChild(joystickEl);
 
-        var getChild = function(className){ return joystickEl.getElementsByClassName(className)[0]; }
+        var getChild = function(className){ return joystickEl.getElementsByClassName(className)[0]; };
 
         var handle = getChild('handle');
         var vHandle = getChild('v-handle');
@@ -59,6 +59,14 @@ var JStickUI = (function(){
             settings.inputs.y.value = data.y;
         } : function(){} ;
 
+        var enableTextSelection = function(enabled){
+            var cls = document.body.getAttribute('class');
+            if (!enabled){
+                document.body.setAttribute('class', 'jstick-ui-suppress-selection ' + cls)
+            }else{
+                document.body.setAttribute('class', cls.replace('jstick-ui-suppress-selection ', ''))
+            }
+        };
         
         var constrainedStick = function(target, constrainedAxis){
             var ticker = new Ticker( function(){
@@ -72,6 +80,7 @@ var JStickUI = (function(){
                 onactivate: function(){
                     handle.style.transition = vHandleHolder.style.transition = hHandleHolder.style.transition = 0;
                     snapshot = shallowClone(data);
+                    enableTextSelection(false);
                     ticker.start();
                 },
                 onrelease: function(){
@@ -80,6 +89,7 @@ var JStickUI = (function(){
                     handle.style.bottom = 0;
                     vHandleHolder.style.top = 0;
                     hHandleHolder.style.right = 0;
+                    enableTextSelection(true);
                     ticker.stop();
                 },
                 ondrag: function(){

@@ -1,3 +1,12 @@
+.jstick-ui-suppress-selection input{
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: moz-none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .jstick-ui-container{
     position:relative;
     width:70px; height:70px;
