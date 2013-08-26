@@ -124,7 +124,7 @@
 }
 .v-sensitivity-holder{
     position:absolute;
-    top:10; left:0; bottom:10;
+    top:10px; left:0; bottom:10px;
     width:0;
     border-right: 1px dotted rgb(226, 226, 226);
     border-left: 1px solid rgb(175, 175, 175);
@@ -132,56 +132,56 @@
 
 .h-sensitivity-holder{
     position:absolute;
-    left:10; bottom:0; right:10;
+    left:10px; bottom:0; right:10px;
     height:0;
     border-bottom: 1px dotted rgb(226, 226, 226);
     border-top: 1px solid rgb(175, 175, 175);
 }
-.v-sensitivity-handle{
-    width: 5px;
+.v-sensitivity-holder .sensitivity-handle{
+    width: 6px;
     height: 2px;
 }
-.h-sensitivity-handle{
+.h-sensitivity-holder .sensitivity-handle{
     width: 2px;
-    height: 5px;
+    height: 6px;
 }
-.v-sensitivity-handle,.h-sensitivity-handle{
+.sensitivity-handle{
     right:0;
     bottom:0;
     position: absolute;
-    margin-right: -3px;
-    margin-bottom: -3px;
+    margin-right: -4px;
+    margin-bottom: -4px;
     border: 1px solid black;
     border-radius: 1px;
     background-color: rgb(172,172,172);
     cursor: pointer;
 }
-.tooltip{
+.jstick-ui-container .tooltip{
     opacity: 0;
     content: '';
     position: absolute;
     width: 0;
-    height: 1;
+    height: 1px;
     border: 4px solid black;
     border-top-color: transparent;
     border-left-color: transparent;
     border-bottom-color: transparent;
-    left: 6;
-    top: -1;
+    left: 6px;
+    top: -1px;
 }
-.tooltip:after{
+.jstick-ui-container .tooltip:after{
     content: attr(data-content);
     background: rgba(0,0,0,.8);
     border-radius: 2px;
     color: #fff;
     border-color: white;
     font-size: 8pt;
-    left: 3;
+    left: 3px;
     top: -0.75em;
     padding: 2px 5px;
     position: absolute;
     z-index: 98;
     white-space: nowrap;
-    border-top-left-radius: 5;
-    border-bottom-left-radius: 5;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
 }

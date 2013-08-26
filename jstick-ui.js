@@ -9,11 +9,11 @@ var JStickUI = (function(){
             stop: function(){ window.clearInterval(this.timer); },
             tick: tick
         };
-    }
+    };
 
     var tpl = '\
-        <div class="v-sensitivity-holder"><div class="v-sensitivity-handle"></div></div>\
-        <div class="h-sensitivity-holder"><div class="h-sensitivity-handle"></div></div>\
+        <div class="v-sensitivity-holder"><div class="sensitivity-handle"></div></div>\
+        <div class="h-sensitivity-holder"><div class="sensitivity-handle"></div></div>\
         <div class="ring">\
             <div class="v-handle-holder"><div class="v-handle"></div></div>\
             <div class="h-handle-holder"><div class="h-handle"></div></div>\
@@ -50,8 +50,8 @@ var JStickUI = (function(){
         var hHandle = getChild('h-handle');
         var vHandleHolder = getChild('v-handle-holder');
         var hHandleHolder = getChild('h-handle-holder');
-        var vsHandle = getChild('v-sensitivity-handle');
-        var hsHandle = getChild('h-sensitivity-handle');
+        var vsHandle = getChild('v-sensitivity-holder').children[0];
+        var hsHandle = getChild('h-sensitivity-holder').children[0];
         
         var snapshot = shallowClone(data);
         var syncData = settings.inputs ? function(){
