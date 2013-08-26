@@ -154,6 +154,10 @@ var JStickUI = (function(){
         var vsStick = sensitivityStick(vsHandle, 'y');
     
         return {
+            targets:[],
+            addTarget: function(target){
+                this.targets.push(constrainedStick(target));
+            },
             sync: function(){
                 hsStick.sync();
                 vsStick.sync();
