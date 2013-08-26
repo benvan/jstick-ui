@@ -20,7 +20,7 @@ var JStickUI = (function(){
             <div class="handle-holder"><div id="handle" class="handle"></div></div>\
         </div>';
 
-    return function(data, opts){
+    return function(opts){
         var defaults = {
             container: document.body,
             sensitivity: {
@@ -53,8 +53,9 @@ var JStickUI = (function(){
         var vsHandle = getChild('v-sensitivity-holder').children[0];
         var hsHandle = getChild('h-sensitivity-holder').children[0];
         
-        var snapshot = shallowClone(data);
+        var snapshot = settings.getData();
         var syncData = settings.inputs ? function(){
+            var data = settings.getData();
             settings.inputs.x.value = data.x;
             settings.inputs.y.value = data.y;
         } : function(){} ;
@@ -70,16 +71,21 @@ var JStickUI = (function(){
         
         var constrainedStick = function(target, constrainedAxis){
             var ticker = new Ticker( function(){
+                var data = settings.getData();
                 var offset = settings.mode == 'continuous' ? data : snapshot;
-                if (constrainedAxis != 'y') data.x = offset.x + stick.dx(settings.sensitivity.x.val);
-                if (constrainedAxis != 'x') data.y = offset.y + stick.dy(settings.sensitivity.y.val);
+                var x = (constrainedAxis != 'y') ? offset.x + stick.dx(data.xSensitivity) : data.x;
+                var y = (constrainedAxis != 'x') ? offset.y + stick.dy(data.ySensitivity) : data.y;
+                settings.setData(extend(data,{
+                    x:x,
+                    y:y
+                }));
                 syncData();
             } , settings.tickTime);
             var stick = new JStick({
                 target: target,
                 onactivate: function(){
                     handle.style.transition = vHandleHolder.style.transition = hHandleHolder.style.transition = 0;
-                    snapshot = shallowClone(data);
+                    snapshot = settings.getData();
                     enableTextSelection(false);
                     ticker.start();
                 },
@@ -114,32 +120,44 @@ var JStickUI = (function(){
         var sensitivityStick = function(target, axis){
             var holder = target.parentElement;
             var size = Math.max(holder.offsetWidth, holder.offsetHeight);
-            var snapshot = settings.sensitivity[axis].val;
-            var syncHandle = function(sensitivity){
-                var v = sensitivity.min + (sensitivity.val / (sensitivity.max - sensitivity.min));
+            var snapshot = settings.getData()[axis+'Sensitivity'];
+            var syncHandle = function(val, range){
+                var v = range.min + (val / (range.max - range.min));
                 var pixelV = size * v;
-                target.style[axis == 'x' ? 'left' : 'bottom'] = pixelV;
-                target.setAttribute('data-sensitivity', sensitivity.val.toFixed(2));
+                target.style[axis == 'x' ? 'left' : 'bottom'] = pixelV + "px";
+                target.setAttribute('data-sensitivity', val.toFixed(2));
             };
-            syncHandle(settings.sensitivity[axis]);
-            return new JStick({
-                target: target,
-                onactivate: function(){ snapshot = settings.sensitivity[axis].val; },
-                ondrag: function(){
-                    var sensitivity = settings.sensitivity[axis];
-                    var pixelOffset = this['d'+axis]() * (axis == 'y' ? -1 : 1);
-                    var sensitivityOffset = (pixelOffset / size)*(sensitivity.max - sensitivity.min);
-                    var value = Math.max(sensitivity.min, Math.min(sensitivity.max, snapshot + sensitivityOffset));
-                    sensitivity.val = value;
-                    syncHandle(sensitivity);
-                }
-            });
-        }
+            syncHandle(snapshot, settings.sensitivity[axis]);
+            return {
+                sync: function(){
+                    syncHandle(settings.getData()[axis+'Sensitivity'], settings.sensitivity[axis]);
+                    syncData()
+                },
+                stick: new JStick({
+                    target: target,
+                    onactivate: function(){ snapshot = settings.getData()[axis+'Sensitivity']; },
+                    ondrag: function(){
+                        var range = settings.sensitivity[axis];
+                        var pixelOffset = this['d'+axis]() * (axis == 'y' ? -1 : 1);
+                        var sensitivityOffset = (pixelOffset / size)*(range.max - range.min);
+                        var value = Math.max(range.min, Math.min(range.max, snapshot + sensitivityOffset));
+                        var data = settings.getData();
+                        data[axis+'Sensitivity'] = value;
+                        settings.setData(data);
+                        syncHandle(value, range);
+                    }
+                })
+            };
+        };
 
         var hsStick = sensitivityStick(hsHandle, 'x');
         var vsStick = sensitivityStick(vsHandle, 'y');
     
         return {
+            sync: function(){
+                hsStick.sync();
+                vsStick.sync();
+            },
             enable: function(yesNo){
                 vStick.enabled = vStick.enabled = jStick.enabled = yesNo;
             }

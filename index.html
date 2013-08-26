@@ -2,7 +2,7 @@
 <head>
     <script src="jstick/jstick.js" type="text/javascript"></script>
     <script src="jstick-ui.js" type="text/javascript"></script>
-    <link rel="stylesheet" type="text/css" href="jstick-ui.css"></link>
+    <link rel="stylesheet" type="text/css" href="jstick-ui.css"/>
     <style type="text/css">
         #container{
             padding:30px;
@@ -39,15 +39,17 @@
     <script type="text/javascript">
         var data = {
             x: 0.5,
-            y: 0.1
+            y: 0.1,
+            xSensitivity: 5.3,
+            ySensitivity: 7.2
         };
-        new JStickUI(data, {
+        var getData = function(){ return data };
+        var setData = function(d){ data = d }; 
+        new JStickUI({
             container: document.getElementById('container'),
+            getData: getData,
+            setData: setData,
             mode: 'continuous',
-            sensitivity:{
-                x: {min:0, max:10, val: 5.4},
-                y: {min:0, max:10, val: 3.8}
-            },
             tickTime: 10,
             inputs:{
                 x: document.getElementById('x'),
@@ -55,13 +57,11 @@
             }
         });
 
-        new JStickUI(data, {
+        new JStickUI({
             container: document.getElementById('container'),
+            getData: getData,
+            setData: setData,
             mode: 'static',
-            sensitivity:{
-                x: {min:0, max:10, val: 7.2},
-                y: {min:0, max:10, val: 2.1}
-            },
             inputs:{
                 x: document.getElementById('x'),
                 y: document.getElementById('y')
