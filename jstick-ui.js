@@ -99,10 +99,10 @@ var JStickUI = (function(){
                     var h = Math.sqrt(y*y+x*x);
                     var d = 0.1*Math.log(h+1);
                     var extent = d*(RADIUS/h);
-                    handle.style.right = -x*extent;
-                    handle.style.bottom = -y*extent;
-                    vHandleHolder.style.top = (y*extent*0.3);
-                    hHandleHolder.style.right = -(x*extent*0.3);
+                    handle.style.right = -x*extent + "px";
+                    handle.style.bottom = y*extent + "px";
+                    vHandleHolder.style.top = -(y*extent*0.3) + "px";
+                    hHandleHolder.style.right = -(x*extent*0.3) + "px";
                 }
             });
         };
