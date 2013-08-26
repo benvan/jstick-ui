@@ -138,7 +138,7 @@ var JStickUI = (function(){
                     onactivate: function(){ snapshot = settings.getData()[axis+'Sensitivity']; },
                     ondrag: function(){
                         var range = settings.sensitivity[axis];
-                        var pixelOffset = this['d'+axis]() * (axis == 'y' ? -1 : 1);
+                        var pixelOffset = this['d'+axis]();
                         var sensitivityOffset = (pixelOffset / size)*(range.max - range.min);
                         var value = Math.max(range.min, Math.min(range.max, snapshot + sensitivityOffset));
                         var data = settings.getData();
