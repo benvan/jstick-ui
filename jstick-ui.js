@@ -55,8 +55,9 @@ var JStickUI = (function(){
         var hHandleHolder = getChild('h-handle-holder');
         var vsHandle = getChild('v-sensitivity-holder').children[0];
         var hsHandle = getChild('h-sensitivity-holder').children[0];
+
+        var snapshot = shallowClone(settings.getData());
         
-        var snapshot = settings.getData();
         var syncData = settings.inputs ? function(){
             var data = settings.getData();
             settings.inputs.x.value = data.x;
@@ -88,7 +89,7 @@ var JStickUI = (function(){
                 target: target,
                 onactivate: function(){
                     handle.style.transition = vHandleHolder.style.transition = hHandleHolder.style.transition = 0;
-                    snapshot = settings.getData();
+                    snapshot = shallowClone(settings.getData());
                     enableTextSelection(false);
                     ticker.start();
                     settings.onactivate();
