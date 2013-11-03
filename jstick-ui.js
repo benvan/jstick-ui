@@ -5,7 +5,7 @@ var JStickUI = (function(){
 
     var Ticker = function(tick, time){
         return {
-            start: function(){ this.timer = window.setInterval(tick, time); },
+            start: function(){ this.stop(); this.timer = window.setInterval(tick, time); },
             stop: function(){ window.clearInterval(this.timer); },
             tick: tick
         };
@@ -21,6 +21,7 @@ var JStickUI = (function(){
         </div>';
 
     return function(opts){
+        var noop = function(){};
         var defaults = {
             container: document.body,
             sensitivity: {
@@ -28,6 +29,8 @@ var JStickUI = (function(){
                 y: { min: 0, max: 10, val: 0 }
             },
             inputs: null,
+            onactivate: noop,
+            onrelease: noop,
             mode: 'static', // or continuous
             tickTime: 10 // used only for continuous mode
         };
@@ -88,6 +91,7 @@ var JStickUI = (function(){
                     snapshot = settings.getData();
                     enableTextSelection(false);
                     ticker.start();
+                    settings.onactivate();
                 },
                 onrelease: function(){
                     handle.style.transition = vHandleHolder.style.transition = hHandleHolder.style.transition = "0.25s";
@@ -97,6 +101,7 @@ var JStickUI = (function(){
                     hHandleHolder.style.right = 0;
                     enableTextSelection(true);
                     ticker.stop();
+                    settings.onrelease();
                 },
                 ondrag: function(){
                     var x = constrainedAxis == 'y' ? 0 : this.dx();
@@ -104,13 +109,14 @@ var JStickUI = (function(){
                     
                     var h = Math.sqrt(y*y+x*x);
                     var d = 0.1*Math.log(h+1);
-                    var extent = d*(RADIUS/h);
+                    var extent = ( h < RADIUS/5 ) ? 1 : d*(RADIUS/h);
                     handle.style.right = -x*extent + "px";
                     handle.style.bottom = y*extent + "px";
                     vHandleHolder.style.top = -(y*extent*0.3) + "px";
                     hHandleHolder.style.right = -(x*extent*0.3) + "px";
                 }
             });
+            return stick;
         };
 
         var vStick = constrainedStick(vHandle, 'y');
@@ -154,16 +160,21 @@ var JStickUI = (function(){
         var vsStick = sensitivityStick(vsHandle, 'y');
     
         return {
+            container: joystickEl,
             targets:[],
+            jstick: jStick,
             addTarget: function(target){
-                this.targets.push(constrainedStick(target));
+                var stick = constrainedStick(target);
+                this.targets.push(stick);
+                return stick;
             },
             sync: function(){
                 hsStick.sync();
                 vsStick.sync();
             },
             enable: function(yesNo){
-                vStick.enabled = vStick.enabled = jStick.enabled = yesNo;
+                var val = yesNo === undefined || yesNo;
+                vsStick.enabled = hsStick.enabled = jStick.enabled = val;
             }
         }
 
