@@ -93,27 +93,28 @@
             }
         });
 
+
+        var switchStick = function(jstick){
+            if (dragger.active){
+                dragger.release();
+                target = jstick;
+                dragger.activateAt(dragger.now);
+            }
+            target = jstick;
+        };
+
         document.addEventListener('keydown', function(ev){
             if (ev.keyCode == 91){
                 console.log("dragger active: ", dragger.active);
-                if (dragger.active){
-                    dragger.release();
-                    target = bStick.jstick;
-                    dragger.activateAt(dragger.now);
-                }
-                target = bStick.jstick;
+                switchStick(bStick.jstick)
 
             }
         });
+
         document.addEventListener('keyup', function(ev){
             if (ev.keyCode == 91){
                 console.log("dragger active: ", dragger.active);
-                if (dragger.active){
-                    dragger.release();
-                    target = aStick.jstick;
-                    dragger.activateAt(dragger.now);
-                }
-                target = aStick.jstick;
+                switchStick(aStick.jstick);
             }
         });
 
